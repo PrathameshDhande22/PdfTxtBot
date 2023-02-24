@@ -5,6 +5,7 @@ from telegram.ext import CommandHandler, MessageHandler, filters, ContextTypes, 
 from .messages import *
 from .extracter import TextExtractor
 from .ImageExtract import extractImg
+from PdfTxtBot import messages
 
 
 class PDFBot:
@@ -38,9 +39,12 @@ class PDFBot:
         await update.message.reply_document(document=update.message.document, caption="Click On 👇 Extract Button to Get Text", reply_markup=InlineKeyboardMarkup(keyboard))
 
     async def __otherHandler__(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        filename = update.message.document.file_name.split(".")
-        extension = filename[len(filename)-1]
-        await update.message.reply_text(text=WRONGFILE.format(extension), parse_mode=constants.ParseMode.HTML)
+        try:
+            filename = update.message.document.file_name.split(".")
+            extension = filename[len(filename)-1]
+            await update.message.reply_text(text=WRONGFILE.format(extension), parse_mode=constants.ParseMode.HTML)
+        except AttributeError as e:
+            await update.message.reply_text("Sorry Bot can't Read this file\n\nTry Sending the file with ```.pdf``` Extension",parse_mode=constants.ParseMode.MARKDOWN_V2)
 
     async def __extract_text__(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         filename = r"PdfTxtBot\Docs\file"+str(update.effective_chat.id)+".pdf"
@@ -53,10 +57,15 @@ class PDFBot:
             txtfilename = r"PdfTxtBot\Docs\file" + \
                 str(update.effective_chat.id)+".txt"
             txt = TextExtractor(filename=filename)
-            with open(txtfilename, "w") as f:
+            with open(txtfilename, "w",encoding="utf-8") as f:
                 f.write(txt.extract)
-            await context.bot.send_chat_action(action=constants.ChatAction.UPLOAD_DOCUMENT, chat_id=update.effective_chat.id)
-            await context.bot.send_media_group(chat_id=update.effective_chat.id, media=[InputMediaDocument(media=open(txtfilename, "rb"), caption="Converted Text", filename=name)])
+            try:
+                await context.bot.send_chat_action(action=constants.ChatAction.UPLOAD_DOCUMENT, chat_id=update.effective_chat.id)
+                await context.bot.send_media_group(chat_id=update.effective_chat.id, media=[InputMediaDocument(media=open(txtfilename, "rb"), caption="Converted Text", filename=name)])
+            except telegram.error.BadRequest as bd:
+                if bd.message=="File must be non-empty":
+                    await update.callback_query.delete_message()
+                    await update.callback_query.message.reply_text(messages.SCANFILE.format(update.effective_user.first_name))
             os.remove(txtfilename)
             os.remove(filename)
         elif update.callback_query.data == "Img":

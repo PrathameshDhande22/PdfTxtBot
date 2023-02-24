@@ -32,3 +32,9 @@ Sorry <code>.{}</code> File Extension is Not Compatible
 
 Only <code>.pdf</code> File is Acceptable.
 """
+
+SCANFILE="""
+Sorry 😞😞😞 {},
+
+Bot can't read the Scan PDF text because Currently OCR is not Supported 
+"""
