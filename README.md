@@ -40,7 +40,7 @@ Just run this command
 python main.py
 ```
 
-## Output : 
-
+##  Output :
+![op](https://user-images.githubusercontent.com/87264935/221605767-995948bf-e961-4cb1-b735-7ad50e48d35a.gif)
 
 ## Author : Prathamesh Dhande
