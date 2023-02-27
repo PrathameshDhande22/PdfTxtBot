@@ -41,6 +41,6 @@ python main.py
 ```
 
 ##  Output :
-<img src="https://user-images.githubusercontent.com/87264935/221605767-995948bf-e961-4cb1-b735-7ad50e48d35a.gif" width="400">
+<img src="https://user-images.githubusercontent.com/87264935/221605767-995948bf-e961-4cb1-b735-7ad50e48d35a.gif" width="300">
 
 ## Author : Prathamesh Dhande
